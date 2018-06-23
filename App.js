@@ -22,7 +22,7 @@ export default class App extends Component {
         y: 0,
         z: 0
       },
-      SelectedColor:"white",
+      SelectedColor: "#000000",
       isSelected: false
     };
     this.ARPanResponder = PanResponder.create({
@@ -37,10 +37,14 @@ export default class App extends Component {
         }).then(res => {
           // console.log("Selected ")
           if (res.results.length > 0) {
-
-            if(res.results[0].id.includes("$")) {
-
-              this.setState({SelectedColor:res.results[0].id.substr(1,res.results[0].id.length)})
+            if (res.results[0].id.includes("$")) {
+              this.setState({
+                SelectedColor: res.results[0].id.substr(
+                  1,
+                  res.results[0].id.length
+                )
+              });
+              this.forceUpdate();
             }
             this.setState({ isSelected: true });
           }
@@ -87,7 +91,7 @@ export default class App extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ARKit
-          style={{ flex: 1 }}
+          style={{ flex: 0.97 }}
           // debug
           // enable plane detection (defaults to Horizontal)
           planeDetection={ARKit.ARPlaneDetection.Horizontal}
@@ -124,16 +128,62 @@ export default class App extends Component {
               position={this.state.arPosition}
               transition={{ duration: 0.01 }}
             >
-              <ARKit.Sphere
+              {/* <ARKit.Sphere
                 position={{ x: 0, y: 0, z: 0.0 }}
                 transition={{ duration: 0.01 }}
                 shape={{ radius: 0.05 }}
                 material={{ diffuse: this.state.SelectedColor }}
-              />
+              /> */}
+
+              {console.log(this.state.SelectedColor)}
+
+              {this.state.SelectedColor === "#c6ab8d" ? (
+                <ARKit.Model
+                  position={{ x: 0, y: 0, z: 0 }}
+                  scale={0.1}
+                  id="12"
+                  material={{
+                    color: "#c6ab8d"
+                  }}
+                  transition={{ duration: 0.01 }}
+                  model={{
+                    scale: 1, // this is deprecated, use the scale property that is available on all 3d objects
+                    file: "art.scnassets/sofa.dae" // make sure you have the model file in the ios project
+                  }}
+                />
+              ) : null}
+              {this.state.SelectedColor === "#000000" ? (
+                <ARKit.Model
+                  position={{ x: 0, y: 0, z: 0 }}
+                  scale={0.1}
+                  material={{
+                    color: "#00000"
+                  }}
+                  transition={{ duration: 0.01 }}
+                  model={{
+                    scale: 1, // this is deprecated, use the scale property that is available on all 3d objects
+                    file: "art.scnassets/sofa.dae" // make sure you have the model file in the ios project
+                  }}
+                />
+              ) : null}
+              {this.state.SelectedColor === "#3d0f82" ? (
+                <ARKit.Model
+                  position={{ x: 0, y: 0, z: 0 }}
+                  scale={0.1}
+                  material={{
+                    color: "#3d0f82"
+                  }}
+                  transition={{ duration: 0.01 }}
+                  model={{
+                    scale: 1, // this is deprecated, use the scale property that is available on all 3d objects
+                    file: "art.scnassets/sofa.dae" // make sure you have the model file in the ios project
+                  }}
+                />
+              ) : null}
               <ARKit.Box
-                position={{ x: 0.12, y: 0, z: 0.0 }}
-                material={{ diffuse: "blue" }}
-                id="$blue"
+                position={{ x: 0.15, y: 0, z: 0.0 }}
+                material={{ diffuse: "#c6ab8d" }}
+                id="$#c6ab8d"
                 shape={{
                   width: 0.05,
                   length: 0.05,
@@ -143,8 +193,8 @@ export default class App extends Component {
                 transition={{ duration: 1 }}
               />
               <ARKit.Box
-                id="$red"
-                position={{ x: 0, y: 0, z: 0.12 }}
+                id="$#000000"
+                position={{ x: 0, y: 0, z: 0.15 }}
                 material={{ diffuse: "red" }}
                 shape={{
                   width: 0.05,
@@ -155,9 +205,9 @@ export default class App extends Component {
                 transition={{ duration: 1 }}
               />
               <ARKit.Box
-                id="$green"
-                position={{ x: -0.12, y: 0, z: 0 }}
-                material={{ diffuse: "green" }}
+                id="$#3d0f82"
+                position={{ x: -0.15, y: 0, z: 0 }}
+                material={{ diffuse: "#3d0f82" }}
                 shape={{
                   width: 0.05,
                   length: 0.05,
@@ -169,6 +219,13 @@ export default class App extends Component {
             </ARKit.Group>
           ) : null}
         </ARKit>
+        <View style={{ height: 36 }}>
+          <Text
+            style={{ fontSize: 36, fontWeight: "bold", textAlign: "center" }}
+          >
+            Sofa
+          </Text>
+        </View>
       </View>
     );
   }
