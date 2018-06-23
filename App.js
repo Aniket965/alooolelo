@@ -8,7 +8,9 @@ import {
   PanResponder
 } from "react-native";
 import { ARKit, withProjectedPosition } from "react-native-arkit";
+import Header from "./Header";
 var projectPosition = null;
+
 const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 export default class App extends Component {
   constructor() {
@@ -22,7 +24,9 @@ export default class App extends Component {
         y: 0,
         z: 0
       },
+      Selected: 1,
       SelectedColor: "#000000",
+      isAroff: true,
       isSelected: false
     };
     this.ARPanResponder = PanResponder.create({
@@ -80,150 +84,202 @@ export default class App extends Component {
       }
     });
   }
-  // constructor() {
-  //   super();
-  //   this.state = {
-  //     anchor: null
-  //   };
-  // }
 
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <ARKit
-          style={{ flex: 0.97 }}
-          // debug
-          // enable plane detection (defaults to Horizontal)
-          planeDetection={ARKit.ARPlaneDetection.Horizontal}
-          // enable light estimation (defaults to true)
-          lightEstimationEnabled
-          // get the current lightEstimation (if enabled)
-          // it fires rapidly, so better poll it from outside with
-          // ARKit.getCurrentLightEstimation()
-          // onLightEstimation={e => console.log(e.nativeEvent)}
-          // event listener for (horizontal) plane detection
-          onPlaneDetected={anchor => {
-            this.setState({ anchor, arPosition: anchor.position });
-          }}
-          // event listener for plane update
-          onPlaneUpdated={anchor => {
-            if (!this.state.isSelected) {
-              console.log("Not Selected ");
+        <Header />
+        {this.state.isAroff ? (
+          <View style={{ flex: 0.97 }} />
+        ) : (
+          <ARKit
+            style={{ flex: 0.97 }}
+            // debug
+            // enable plane detection (defaults to Horizontal)
+            planeDetection={ARKit.ARPlaneDetection.Horizontal}
+            // enable light estimation (defaults to true)
+            lightEstimationEnabled
+            // get the current lightEstimation (if enabled)
+            // it fires rapidly, so better poll it from outside with
+            // ARKit.getCurrentLightEstimation()
+            // onLightEstimation={e => console.log(e.nativeEvent)}
+            // event listener for (horizontal) plane detection
+            onPlaneDetected={anchor => {
               this.setState({ anchor, arPosition: anchor.position });
-            }
-          }}
-          // // arkit sometimes removes detected planes
-          // onPlaneRemoved={anchor => console.log(anchor)}
-          // event listeners for all anchors, see [Planes and Anchors](#planes-and-anchors)
-          // onAnchorDetected={anchor => console.log(anchor)}
-          // onAnchorUpdated={anchor => console.log(anchor)}
-          // onAnchorRemoved={anchor => console.log(anchor)}
-          // you can detect images and will get an anchor for these images
-          // detectionImages={[{ resourceGroupName: "DetectionImages" }]}
-          onARKitError={console.log} // if arkit could not be initialized (e.g. missing permissions), you will get notified here
-          {...this.ARPanResponder.panHandlers}
-        >
-          {this.state.anchor ? (
-            <ARKit.Group
-              position={this.state.arPosition}
-              transition={{ duration: 0.01 }}
-            >
-              {/* <ARKit.Sphere
-                position={{ x: 0, y: 0, z: 0.0 }}
-                transition={{ duration: 0.01 }}
-                shape={{ radius: 0.05 }}
-                material={{ diffuse: this.state.SelectedColor }}
-              /> */}
-
-              {console.log(this.state.SelectedColor)}
-
-              {this.state.SelectedColor === "#c6ab8d" ? (
-                <ARKit.Model
-                  position={{ x: 0, y: 0, z: 0 }}
-                  scale={0.1}
-                  id="12"
-                  material={{
-                    color: "#c6ab8d"
-                  }}
-                  transition={{ duration: 0.01 }}
-                  model={{
-                    scale: 1, // this is deprecated, use the scale property that is available on all 3d objects
-                    file: "art.scnassets/sofa.dae" // make sure you have the model file in the ios project
-                  }}
-                />
-              ) : null}
-              {this.state.SelectedColor === "#000000" ? (
-                <ARKit.Model
-                  position={{ x: 0, y: 0, z: 0 }}
-                  scale={0.1}
-                  material={{
-                    color: "#00000"
-                  }}
-                  transition={{ duration: 0.01 }}
-                  model={{
-                    scale: 1, // this is deprecated, use the scale property that is available on all 3d objects
-                    file: "art.scnassets/sofa.dae" // make sure you have the model file in the ios project
-                  }}
-                />
-              ) : null}
-              {this.state.SelectedColor === "#3d0f82" ? (
-                <ARKit.Model
-                  position={{ x: 0, y: 0, z: 0 }}
-                  scale={0.1}
-                  material={{
-                    color: "#3d0f82"
-                  }}
-                  transition={{ duration: 0.01 }}
-                  model={{
-                    scale: 1, // this is deprecated, use the scale property that is available on all 3d objects
-                    file: "art.scnassets/sofa.dae" // make sure you have the model file in the ios project
-                  }}
-                />
-              ) : null}
-              <ARKit.Box
-                position={{ x: 0.15, y: 0, z: 0.0 }}
-                material={{ diffuse: "#c6ab8d" }}
-                id="$#c6ab8d"
-                shape={{
-                  width: 0.05,
-                  length: 0.05,
-                  height: 0.05,
-                  chamfer: 0.01
-                }}
-                transition={{ duration: 1 }}
-              />
-              <ARKit.Box
-                id="$#000000"
-                position={{ x: 0, y: 0, z: 0.15 }}
-                material={{ diffuse: "red" }}
-                shape={{
-                  width: 0.05,
-                  length: 0.05,
-                  height: 0.05,
-                  chamfer: 0.01
-                }}
-                transition={{ duration: 1 }}
-              />
-              <ARKit.Box
-                id="$#3d0f82"
-                position={{ x: -0.15, y: 0, z: 0 }}
-                material={{ diffuse: "#3d0f82" }}
-                shape={{
-                  width: 0.05,
-                  length: 0.05,
-                  height: 0.05,
-                  chamfer: 0.01
-                }}
-                transition={{ duration: 1 }}
-              />
-            </ARKit.Group>
-          ) : null}
-        </ARKit>
-        <View style={{ height: 36 }}>
-          <Text
-            style={{ fontSize: 36, fontWeight: "bold", textAlign: "center" }}
+            }}
+            // event listener for plane update
+            onPlaneUpdated={anchor => {
+              if (!this.state.isSelected) {
+                console.log("Not Selected ");
+                this.setState({ anchor, arPosition: anchor.position });
+              }
+            }}
+            // // arkit sometimes removes detected planes
+            // onPlaneRemoved={anchor => console.log(anchor)}
+            // event listeners for all anchors, see [Planes and Anchors](#planes-and-anchors)
+            // onAnchorDetected={anchor => console.log(anchor)}
+            // onAnchorUpdated={anchor => console.log(anchor)}
+            // onAnchorRemoved={anchor => console.log(anchor)}
+            // you can detect images and will get an anchor for these images
+            // detectionImages={[{ resourceGroupName: "DetectionImages" }]}
+            onARKitError={console.log} // if arkit could not be initialized (e.g. missing permissions), you will get notified here
+            {...this.ARPanResponder.panHandlers}
           >
-            Sofa
+            {this.state.anchor ? (
+              <ARKit.Group
+                position={this.state.arPosition}
+                transition={{ duration: 0.01 }}
+              >
+                {console.log(this.state.SelectedColor)}
+
+                {this.state.Selected === 1 ? (
+                  <ARKit.Model
+                    position={{ x: 0, y: 0, z: 0 }}
+                    scale={0.1}
+                    id="12"
+                    material={{
+                      color: "#c6ab8d"
+                    }}
+                    transition={{ duration: 0.01 }}
+                    model={{
+                      scale: 1, // this is deprecated, use the scale property that is available on all 3d objects
+                      file: "art.scnassets/sofa.dae" // make sure you have the model file in the ios project
+                    }}
+                  />
+                ) : null}
+                {this.state.Selected === 2 ? (
+                  <ARKit.Model
+                    position={{ x: 0, y: 0, z: 0 }}
+                    scale={0.1}
+                    material={{
+                      color: "#00000"
+                    }}
+                    transition={{ duration: 0.01 }}
+                    model={{
+                      scale: 1, // this is deprecated, use the scale property that is available on all 3d objects
+                      file: "art.scnassets/sofa.dae" // make sure you have the model file in the ios project
+                    }}
+                  />
+                ) : null}
+                {this.state.Selected === 3 ? (
+                  <ARKit.Model
+                    position={{ x: 0, y: 0, z: 0 }}
+                    scale={0.1}
+                    material={{
+                      color: "#3d0f82"
+                    }}
+                    transition={{ duration: 0.01 }}
+                    model={{
+                      scale: 1, // this is deprecated, use the scale property that is available on all 3d objects
+                      file: "art.scnassets/sofa.dae" // make sure you have the model file in the ios project
+                    }}
+                  />
+                ) : null}
+                <ARKit.Text
+                  text={this.state.Selected === 2 ? "₹ 30,000" : "₹ 29,000"}
+                  position={{ x: 0, y: 0.2, z: 0 }}
+                  font={{ size: 0.05, depth: 0.05 }}
+                />
+              </ARKit.Group>
+            ) : null}
+          </ARKit>
+        )}
+
+        <View style={{ flexDirection: "row" }}>
+          <Text
+            style={{
+              fontSize: 36,
+              fontWeight: "bold",
+              color: this.state.Selected === 1 ? "white" : "black",
+              textAlign: "center",
+              marginLeft: 12,
+              paddingLeft: 12,
+              backgroundColor: this.state.Selected === 1 ? "#0e74f9" : "white",
+              paddingRight: 12
+            }}
+            onPress={() => {
+              this.setState({ Selected: 1 });
+            }}
+          >
+            1
+          </Text>
+          <Text
+            style={{
+              fontSize: 36,
+              fontWeight: "bold",
+              color: this.state.Selected === 2 ? "white" : "black",
+              textAlign: "center",
+              marginLeft: 12,
+              paddingLeft: 12,
+              backgroundColor: this.state.Selected === 2 ? "#0e74f9" : "white",
+              paddingRight: 12
+            }}
+            onPress={() => {
+              this.setState({ Selected: 2 });
+            }}
+          >
+            2
+          </Text>
+          <Text
+            style={{
+              fontSize: 36,
+              fontWeight: "bold",
+              color: this.state.Selected === 3 ? "white" : "black",
+              textAlign: "center",
+              marginLeft: 12,
+              paddingLeft: 12,
+              backgroundColor: this.state.Selected === 3 ? "#0e74f9" : "white",
+              paddingRight: 12
+            }}
+            onPress={() => {
+              this.setState({ Selected: 3 });
+            }}
+          >
+            3
+          </Text>
+          <Text
+            style={{
+              fontSize: 36,
+              fontWeight: "bold",
+              color: !this.state.isAroff ? "white" : "black",
+              textAlign: "center",
+              marginLeft: 56,
+              paddingLeft: 12,
+              backgroundColor: !this.state.isAroff ? "#0e74f9" : "white",
+              paddingRight: 12
+            }}
+            onPress={() => {
+              this.setState({ isAroff: !this.state.isAroff });
+            }}
+          >
+            AR
+          </Text>
+          <Text
+            style={{
+              fontSize: 36,
+              fontWeight: "bold",
+              color: "black",
+              textAlign: "center",
+              marginLeft: 64,
+              paddingLeft: 12,
+              paddingRight: 12
+            }}
+          >
+            SOFA
+          </Text>
+          <Text
+            style={{
+              fontSize: 36,
+              fontWeight: "bold",
+              color: "black",
+              textAlign: "center",
+              marginLeft: 64,
+              paddingLeft: 12,
+              paddingRight: 12,
+              backgroundColor: "#f9c60e"
+            }}
+          >
+            BUY NOW
           </Text>
         </View>
       </View>
