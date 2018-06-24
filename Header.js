@@ -14,7 +14,7 @@ export default class Header extends Component {
         <Text
           style={[
             styles.headerButton,
-            { color: this.state.current === 1 ? "#0e74f9" : "black" }
+            { color: this.props.selected === 1 ? "#0e74f9" : "black" }
           ]}
           onPress={() => {
             this.setState({ current: 1 });
@@ -26,7 +26,7 @@ export default class Header extends Component {
         <Text
           style={[
             styles.headerButton,
-            { color: this.state.current === 2 ? "#0e74f9" : "black" }
+            { color: this.props.selected === 2 ? "#0e74f9" : "black" }
           ]}
           onPress={() => {
             this.setState({ current: 2 });
@@ -38,7 +38,7 @@ export default class Header extends Component {
         <Text
           style={[
             styles.headerButton,
-            { color: this.state.current === 3 ? "#0e74f9" : "black" }
+            { color: this.props.selected === 3 ? "#0e74f9" : "black" }
           ]}
           onPress={() => {
             this.setState({ current: 3 });
